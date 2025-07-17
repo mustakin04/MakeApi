@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
-require('dotenv').config()
 const dbBase = () => {
   try{
     const uri=mongoose.connect(
-      `mongodb+srv://mustakinhasan37:${process.env.DB_PASSWORd}@cluster0.5opdt.mongodb.net/${process.env.BD_NAME}?retryWrites=true&w=majority&appName=Cluster0`
+      `mongodb+srv://mustakinhasan37:${process.env.DB_PASSWORd}@cluster0.5opdt.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`
     )
     .then(() => console.log("db connect"));
   }catch(error){

@@ -1,7 +1,6 @@
 const express=require("express")
+const registrationController = require("../../controllers/registrationController")
 const route=express.Router()
-route.get("/registration",(req,res)=>{
-    res.send("ami achi")
-})
+route.post("/registration",registrationController)
 
 module.exports=route
