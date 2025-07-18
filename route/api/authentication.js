@@ -1,11 +1,16 @@
 const express=require("express")
 const registrationController = require("../../controllers/registrationController")
 const {otpController,resendOtp} = require("../../controllers/otpController")
-const loginController = require("../../controllers/loginController")
+const {loginController,dasboard,logOut} = require("../../controllers/loginController")
+const authMiddleware = require("../../middleware/authMiddleware")
+const roleMiddleware = require("../../middleware/roleMiddleware")
 const route=express.Router()
 route.post("/registration",registrationController)
 route.post("/otpController",otpController)
 route.post("/resendOtp",resendOtp)
 route.post("/loginController",loginController)
+route.post("/admin-dasboard",authMiddleware,roleMiddleware("admin"), dasboard)
+route.post("/user-dasboard",authMiddleware,roleMiddleware("user"), dasboard)
+route.post("/logOut",logOut)
 
 module.exports=route

@@ -34,9 +34,31 @@ const loginController=async(req,res)=>{
          if(result=password){
             return res.json("sucess")
          }
+        
        });
+       
    }
+    console.log(req.session,"33")
+     req.session.auth=true
+     req.session.user={
+        id:user.id,
+       email:  user.email,
+       fistName:user.firstName,
+       roles:user.role
+     }
 
 }
-
-module.exports=loginController
+const dasboard=(req,res)=>{
+    res.json("wellcome to dasbord")
+}
+const logOut=(req,res)=>{
+    req.session.destroy(function(err) {
+     if(err){
+        return res.json("logout session error")
+     }
+     else{
+        return res.json("logout sucessfully done")
+     }
+})
+}
+module.exports={loginController,dasboard ,logOut}
