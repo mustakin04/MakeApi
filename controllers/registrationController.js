@@ -6,6 +6,7 @@ const saltRounds = 10;
 const myPlaintextPassword = "s0//P4$$w0rD";
 const someOtherPlaintextPassword = "not_bacon";
 const crypto = require("crypto");
+const emailverification = require("../handler/emailverification");
 
 const registrationController = async (req, res) => {
   const { firstName, lastName, password, email } = req.body;
@@ -25,10 +26,11 @@ const registrationController = async (req, res) => {
     return res.json("password not valid");
   }
   const allUser = await userSchema.find();
-  const existingUser = await allUser.find((item) => item.email === email);
+  const existingUser =  allUser.find((item) => item.email === email);
   if (existingUser) {
     return res.json("alredy this mail existing");
   }
+  const otpExpiry= new Date(Date.now() + 10 * 60 * 1000); 
   const otp=crypto.randomInt(1000000,9000000)
   bcrypt.hash(password, 10, async function (err, hash) {
     // console.log(hash,"26")
@@ -37,8 +39,10 @@ const registrationController = async (req, res) => {
       lastName,
       email,
       password: hash,
-      otp
+      otp,
+      otpExpiry
     });
+    emailverification(email,otp)
     await data.save();
     res.json({
       message: "sucess",

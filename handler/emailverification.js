@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-async function emailverification(email) {
+async function emailverification(email,otp) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     port: 587,
@@ -14,7 +14,7 @@ async function emailverification(email) {
     to: email,
     subject: "Hello ✔",
     text: "Hello world?", // plain‑text body
-    html: "<b>Hello world?</b>", // HTML body
+    html: `<b>Hello world?</b> <p>${otp}</p>` // HTML body
   });
 }
 module.exports = emailverification;

@@ -5,6 +5,15 @@ const userSchema=new Schema({
     lastName:String,
     email:String,
     password:String,
-    otp:String
+    otp:String,
+    otpExpiry:{
+         type:Date,
+         default:Date.now
+    },
+
+    isVerified:{
+        type:Boolean,
+        default:false
+    }
 })
 module.exports=mongoose.model("UserList",userSchema)
