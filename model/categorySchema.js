@@ -8,7 +8,12 @@ const categorySchema=new Schema({
       description:{
         type:String,
         required:true
-      }
+      },
+      subCategory:[{
+        type:Schema.Types.ObjectId,
+        ref:"subCategory",
+
+      }]
 
 })
 
