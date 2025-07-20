@@ -11,7 +11,7 @@ const categorySchema=new Schema({
       },
       subCategory:[{
         type:Schema.Types.ObjectId,
-        ref:"subCategory",
+        ref:"SubCategory",
 
       }]
 

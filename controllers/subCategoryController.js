@@ -1,25 +1,57 @@
-const categorySchema = require("../model/categorySchema");
-const subCategorySchema = require("../model/subCategorySchema");
+const Category = require("../model/categorySchema");
+const SubCategory = require("../model/subCategorySchema");
 
-const subCategory = async(req, res) => {
+const subCategory = async (req, res) => {
   const { name, description, category } = req.body;
-  const categoryId=await categorySchema.find({name:category})
-console.log(categoryId[0]._id)
-  const subCategory = new subCategorySchema({
+
+  const categoryDoc = await Category.findOne({ name: category });
+  if (!categoryDoc) {
+    return res.status(404).json({ message: "Category not found" });
+  }
+
+  const newSubCategory = new SubCategory({
     name,
     description,
-    category:categoryId[0]._id,
-  })
-  subCategory.save()
+    category: categoryDoc._id,
+  });
+
+  await newSubCategory.save();
+
+  // Optionally push subcategory to category's array
+  await Category.updateOne(
+    { _id: categoryDoc._id },
+    { $push: { subCategory: newSubCategory._id } }
+  );
+
   res.json({
-    message:"sucess",
-    data:subCategory
-  })
-  const subCategoryId=await subCategorySchema.findOne({name:name})
-  console.log(subCategory._id)
-  const updateCategory= await categorySchema.updateOne({_id:categoryId[0]._id},
-    {$set:{subCategory:subCategory._id}}
-  )
+    message: "SubCategory created successfully",
+    data: newSubCategory,
+  });
 };
 
-module.exports = subCategory;
+const deleteSubCategory = async (req, res) => {
+  const { id } = req.params;
+
+  const subCategoryDoc = await SubCategory.findById(id).populate("category");
+
+  if (!subCategoryDoc) {
+    return res.status(404).json({ message: "SubCategory not found" });
+  }
+
+  await Category.updateOne(
+    { _id: subCategoryDoc.category._id },
+    { $pull: { subCategory: subCategoryDoc._id } }
+  );
+
+  await SubCategory.deleteOne({ _id: id });
+
+  res.json({
+    message: "SubCategory deleted successfully",
+    data: subCategoryDoc,
+  });
+};
+
+module.exports = {
+  subCategory,
+  deleteSubCategory,
+};
