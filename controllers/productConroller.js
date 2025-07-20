@@ -1,7 +1,8 @@
+const cloudinay = require("../handler/cloudinay");
 const Product = require("../model/productSchema");
 
-const productController = (req, res) => {
-    console.log(req.file)
+const productController =async (req, res) => {
+    // console.log(req.file.path)
   try {
     const {
       name,
@@ -15,12 +16,14 @@ const productController = (req, res) => {
       category,
       subCategory,
     } = req.body;
-
+    const paths=req.file.path
+     const result=await cloudinay(paths)
+     console.log(result)
     const productData = new Product({
       name,
       description,
       price,
-      image:`http://localhost:3000/api/v1/upload/${req.file.filename}`,
+      image:result.secure_url,
       color,
       storge,
       ram,
